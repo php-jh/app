@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="../js/jquery.min.js"></script>
+<!--<script src="../js/webscoket.js"></script>-->
+
+<script>
+
+    // 连接服务端
+    function connect() {
+        // 创建websocket
+        ws = new WebSocket("ws://127.0.0.1:20002");
+        // 当socket连接打开时，输入用户名
+        ws.onopen = function() {
+            data = {
+                'user_id' : 1
+            };
+            data_json = JSON.stringify(data);
+
+            ws.send(data_json);
+
+            console.log("给服务端发送一个字符串：" + data_json);
+        };
+        // 当有消息时根据消息类型显示不同信息
+        ws.onmessage = function(e) {
+            console.log("收到服务端的消息：" + e.data);
+        };
+        ws.onclose = function() {
+            console.log("连接关闭，定时重连");
+            // connect();
+        };
+        ws.onerror = function() {
+            console.log("出现错误");
+        };
+    }
+
+</script>
+<body onload="connect();">
+<input type="text" value="" class="test">
+<input type="submit" value="提交" class="sub">
+</body>
+<script>
+    $(".sub").click(function () {
+        var name = $(".test").val()
+        console.log(name);
+        ws.send(name);
+    })
+
+</script>
+</html>
