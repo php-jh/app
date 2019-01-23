@@ -8,30 +8,33 @@
 <!--<script src="../js/webscoket.js"></script>-->
 
 <script>
+    user_id = Math.random();
 
     // 连接服务端
-    function connect() {
+    function connect(type = 'login') {
         // 创建websocket
         ws = new WebSocket("ws://127.0.0.1:20002");
         // 当socket连接打开时，输入用户名
         ws.onopen = function() {
             data = {
-                'user_id' : 1
+                    'user_id' : user_id,
+                    'type':type
             };
-            data_json = JSON.stringify(data);
-
+            var data_json = JSON.stringify(data);
             ws.send(data_json);
-
-            console.log("给服务端发送一个字符串：" + data_json);
+            // console.log("给服务端发送一个字符串：" + data_json);
         };
         // 当有消息时根据消息类型显示不同信息
         ws.onmessage = function(e) {
             console.log("收到服务端的消息：" + e.data);
         };
+
         ws.onclose = function() {
             console.log("连接关闭，定时重连");
-            // connect();
+            // connect('111111111');
+            connect('123');
         };
+
         ws.onerror = function() {
             console.log("出现错误");
         };
@@ -44,9 +47,15 @@
 </body>
 <script>
     $(".sub").click(function () {
-        var name = $(".test").val()
-        console.log(name);
-        ws.send(name);
+        var name = $(".test").val();
+        data = {
+            'user_id' : user_id,
+            'name' : name,
+            'type':'message'
+        };
+        var data_json = JSON.stringify(data);
+        console.log(data_json);
+        ws.send(data_json);
     })
 
 </script>
